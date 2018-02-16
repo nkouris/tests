@@ -62,7 +62,7 @@ function maxmoves {
 }
 
 function printavrg {
-	if (( ($1 > 100 && $2 <= 5200)
+	if (( ($1 > 100 && $2 <= 5300)
 		|| ($1 > 5 && $2 <= 700)
 		|| ($1 <= 5 && $2 <= 12) )); then
 		printf "${GREEN}Average: $2${NA}\n"
@@ -73,7 +73,7 @@ function printavrg {
 }
 
 function printmoves {
-	if (( ($1 > 100 && $2 <= 5200)
+	if (( ($1 > 100 && $2 <= 5300)
 		|| ($1 > 5 && $2 <= 700)
 		|| ($1 <= 5 && $2 <= 12) )); then
 		printf "${GREEN}Total moves: $2${NA}\n"
@@ -98,7 +98,7 @@ function catchrep {
 
 function numbers {
 	flip=1
-	for ((j=1; j<$1; j++)); do
+	for ((j=0; j<$1; j++)); do
 		ent=`jot -r 1 -2147483648 2147483647`
 		if (( $flip == 1 )); then
 			TEST+="${ent}"
@@ -126,6 +126,10 @@ function numbers {
 function combo {
 	printf "Verbose? y/n?\n"
 	read verb
+	if [[ $verb == "n" ]]; then
+		printf "Do you want to see the integers tested? y/n?\n"
+		read nums
+	fi
 	for ((i=1; i<=$cycles; i++)); do
 		echo "Test $i"
 		numbers $ints
@@ -137,6 +141,10 @@ function combo {
 			maxmoves
 			echo `./push_swap ${TEST} | tr " " "\n" |\
 				./checker ${TEST}`
+		fi
+		if [[ $nums == "y" ]]; then
+			printf "\nTEST WITH:\n"
+			printf "./push_swap \"${TEST}\" | ./checker \"${TEST}\"\n"
 		fi
 		printmoves $ints $MOVE
 		unset TEST
@@ -173,8 +181,8 @@ function push {
 	fi
 	if [[ $move == "n" ]]; then
 		printf "Do you want to see the integers tested? y/n?\n"
+		read nums
 	fi
-	read nums
 	for ((i=1; i<=$cycles; i++)); do
 		numbers $ints
 		if [[ $move == "y" ]]; then
